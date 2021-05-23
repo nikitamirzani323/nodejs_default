@@ -1,10 +1,18 @@
 GET http://localhost:9999
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTI2ODcsImV4cCI6MTYyMTc5MjcxNywiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.E_mdymuB81Qcih7szGsyBgpto8zhV29FrwM18qtKhBQ
+
 
 ###
 GET http://localhost:9999/abc_asd
 
 ### Login Route
 POST http://localhost:9999/auth/login
+Content-Type: application/json
+
+{
+    "email" : "nikitamirzani323458@gmail.com",
+    "password" : "abcd1234"
+}
 
 ### Register Route
 POST http://localhost:9999/auth/register

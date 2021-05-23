@@ -36,6 +36,28 @@ router.post('/register', async (req, res, next) => {
     }
 })
 router.post('/login', async (req, res, next) => {
+    try {
+        const result = await authSchema.validateAsync(req.body)
+        const user = await User.findOne({
+            email: result.email
+        })
+
+        if (!user) throw createError.NotFound("User not register")
+
+        //CHECK PASSWORD
+        const isMath = await user.isValidPassword(result.password)
+        if (!isMath) throw createError.Unauthorized('Username/password not valid')
+
+        const accessToken = await signAccessToken(user.id)
+
+        res.send({
+            accessToken
+        })
+    } catch (error) {
+        //fungsinya ganti pesan error
+        if (error.isJoi === true) return next(createError.BadRequest('Invalid Username/Password'))
+        next(error)
+    }
     res.send('login router');
 })
 router.post('/refresh-token', async (req, res, next) => {
