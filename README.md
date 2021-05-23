@@ -9,8 +9,10 @@ Default Node JS
 -bcrypt
 -JWT TOKEN
 -redis
+-security express rate limit access
 
 Link Referensi :
+https://www.npmjs.com/package/express-rate-limit
 https://www.npmjs.com/package/redis
 https://www.npmjs.com/package/jsonwebtoken
 https://github.com/vercel/ms => untuk ngatur expire token

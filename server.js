@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const limitter = require('express-rate-limit')
 const createError = require('http-errors')
 require('dotenv').config()
 require('./helpers/init_mongodb')
@@ -7,16 +8,23 @@ require('./helpers/init_redis')
 const {
     verifyAccessToken
 } = require('./helpers/jwt_helper')
-// const client = require('./helpers/init_redis')
-// client.SET('foo', 'bar')
-// client.GET('foo', (err, value) => {
-//     if (err) console.log(err.message)
-//     console.log(value)
-// })
+
 
 const AuthRoute = require('./Routes/Auth.route')
 const app = express()
 
+app.use(limitter({
+    //DEMO
+    windowMs: 5000,
+    max: 5,
+    message: {
+        code: 429,
+        message: 'Too many request'
+    }
+    //LIVE
+    // windowMs: 15 * 60 * 1000, // 15 minutes
+    // max: 100 // limit each IP to 100 requests per windowMs
+}))
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({
@@ -27,6 +35,9 @@ app.get('/', verifyAccessToken, async (req, res, next) => {
     res.send("hello from express");
 });
 app.use('/auth', AuthRoute)
+app.use('/about', async (req, res, next) => {
+    res.send("about");
+})
 
 //CAPTURE ERROR NOT FOUND / router tidak terdaftar
 app.use(async (res, req, next) => {
