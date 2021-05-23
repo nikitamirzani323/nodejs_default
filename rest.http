@@ -1,0 +1,16 @@
+GET http://localhost:9999
+
+###
+GET http://localhost:9999/abc_asd
+
+### Login Route
+POST http://localhost:9999/auth/login
+
+### Register Route
+POST http://localhost:9999/auth/register
+
+### Refresh Token Route
+POST http://localhost:9999/auth/refresh-token
+
+### Logout Route
+DELETE http://localhost:9999/auth/logout
