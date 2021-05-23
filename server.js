@@ -16,8 +16,8 @@ app.use(express.urlencoded({
 app.get('/', async (req, res, next) => {
     res.send("hello");
 });
-
 app.use('/auth', AuthRoute)
+
 //CAPTURE ERROR NOT FOUND / router tidak terdaftar
 app.use(async (res, req, next) => {
     next(createError.NotFound('This route does not exist'))
