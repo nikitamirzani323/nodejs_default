@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const helmet = require('helmet')
 const limitter = require('express-rate-limit')
 const createError = require('http-errors')
 const responseTime = require('response-time')
@@ -21,6 +22,11 @@ const {
 const AuthRoute = require('./Routes/Auth.route')
 const app = express()
 
+app.use(helmet({
+    referrerPolicy: {
+        policy: "no-referrer"
+    },
+}))
 app.use(compression({
     level: 6,
     threshold: 100 * 1000,
