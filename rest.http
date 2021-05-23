@@ -1,5 +1,5 @@
 GET http://localhost:9999
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTI2ODcsImV4cCI6MTYyMTc5MjcxNywiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.E_mdymuB81Qcih7szGsyBgpto8zhV29FrwM18qtKhBQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTQ0MzEsImV4cCI6MTYyMTc5NDQ2MSwiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.kGW-2M19LzDwq4NM1ck-Xj0rAgOy2N7EcWmBX6tG0uE
 
 
 ###
@@ -19,12 +19,17 @@ POST http://localhost:9999/auth/register
 Content-Type: application/json
 
 {
-    "email" : "nikitamirzani323458@gmail.com",
+    "email" : "edo@gmail.com",
     "password" : "abcd1234"
 }
 
 ### Refresh Token Route
 POST http://localhost:9999/auth/refresh-token
+Content-Type: application/json
+
+{
+    "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTQzNDAsImV4cCI6MTY1MzM1MTk0MCwiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.Ts5024ql0_0VBJZDelXW8eRwH7gAAcKoYOwwrooFp6U"
+}
 
 ### Logout Route
 DELETE http://localhost:9999/auth/logout

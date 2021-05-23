@@ -4,9 +4,7 @@ const createError = require('http-errors')
 module.exports = {
     signAccessToken: (userId) => {
         return new Promise((resolve, reject) => {
-            const payload = {
-                // iss: 'pickurpage.com'
-            }
+            const payload = {}
             const secret = process.env.ACCESS_TOKEN_SECRET
             const option = {
                 expiresIn: '30s',
@@ -36,6 +34,33 @@ module.exports = {
             }
             req.payload = payload
             next()
+        })
+    },
+    signRefreshToken: (userId) => {
+        return new Promise((resolve, reject) => {
+            const payload = {}
+            const secret = process.env.REFRESH_TOKEN_SECRET
+            const option = {
+                expiresIn: '1y',
+                issuer: 'pickurpage.com',
+                audience: userId
+            }
+            JWT.sign(payload, secret, option, (err, token) => {
+                if (err) {
+                    console.log(err.message)
+                    reject(createError.InternalServerError())
+                }
+                resolve(token)
+            })
+        })
+    },
+    verifyRefreshToken: (refreshToken) => {
+        return new Promise((resolve, reject) => {
+            JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+                if (err) return reject(createError.Unauthorized())
+                const userId = payload.aud
+                resolve(userId)
+            })
         })
     }
 }
