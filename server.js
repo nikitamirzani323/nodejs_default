@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const limitter = require('express-rate-limit')
 const createError = require('http-errors')
 const responseTime = require('response-time')
+const compression = require('compression')
 const axios = require('axios')
 const client = require('./helpers/init_redis')
 const {
@@ -20,6 +21,16 @@ const {
 const AuthRoute = require('./Routes/Auth.route')
 const app = express()
 
+app.use(compression({
+    level: 6,
+    threshold: 100 * 1000,
+    filter: (req, res) => {
+        if (req.headers['x-no-compression']) {
+            return false
+        }
+        return compression.filter(req, res)
+    }
+}))
 app.use(morgan('dev'))
 app.use(responseTime())
 app.use(express.json())
@@ -48,22 +59,15 @@ const aboutLimiter = limitter({
         message: 'Too many request, Please try again'
     }
 })
-app.use('/about', aboutLimiter, async (req, res, next) => {
+app.get('/about', aboutLimiter, async (req, res, next) => {
     res.send("about");
 })
-const rocketLimiter = limitter({
-    windowMs: 5 * 60 * 1000,
-    max: 10,
-    message: {
-        code: 429,
-        message: 'Too many request, Please try again'
-    }
-})
+
 
 const GET_ASYNC = promisify(client.GET).bind(client)
 const SET_ASYNC = promisify(client.SET).bind(client)
 
-app.use('/rockets', async (req, res, next) => {
+app.get('/rockets', async (req, res, next) => {
     try {
         const reply = await GET_ASYNC('rockets')
         if (reply) {
@@ -82,7 +86,7 @@ app.use('/rockets', async (req, res, next) => {
         next(error)
     }
 })
-app.use('/rockets/:rocket_id', async (req, res, next) => {
+app.get('/rockets/:rocket_id', async (req, res, next) => {
     try {
         const {
             rocket_id
@@ -104,6 +108,11 @@ app.use('/rockets/:rocket_id', async (req, res, next) => {
         next(error)
     }
 })
+app.get('/kompres', (req, res, next) => {
+    const payload = 'Faster app which use less bandwith too....'
+    res.send(payload.repeat(10000))
+})
+
 
 //CAPTURE ERROR NOT FOUND / router tidak terdaftar
 app.use(async (res, req, next) => {

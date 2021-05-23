@@ -12,8 +12,10 @@ Default Node JS
 -security express rate limit access
 -response time
 -axios
+-compress
 
 Link Referensi :
+https://www.npmjs.com/package/compression
 https://www.npmjs.com/package/axios
 https://www.npmjs.com/package/response-time
 https://www.npmjs.com/package/express-rate-limit
