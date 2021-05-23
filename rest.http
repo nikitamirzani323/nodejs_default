@@ -1,5 +1,5 @@
 GET http://localhost:9999
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTQ0MzEsImV4cCI6MTYyMTc5NDQ2MSwiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.kGW-2M19LzDwq4NM1ck-Xj0rAgOy2N7EcWmBX6tG0uE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTcyMTUsImV4cCI6MTYyMTc5NzI0NSwiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.FI8IRDFIyGhds7nYGqz3zPnf_Jr8I2nyM9SJbBIjWhw
 
 
 ###
@@ -28,7 +28,7 @@ POST http://localhost:9999/auth/refresh-token
 Content-Type: application/json
 
 {
-    "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTQzNDAsImV4cCI6MTY1MzM1MTk0MCwiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.Ts5024ql0_0VBJZDelXW8eRwH7gAAcKoYOwwrooFp6U"
+    "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTcyOTUsImV4cCI6MTYyMTc5NzMyNSwiYXVkIjoiNjBhYThlNWY2MTY0NzYyNTc0YjQwZjk2IiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.cz2z5ujgRqty4lMmOdUnbFylFqbnFeSU1N3XxuXsEVI"
 }
 
 ### Logout Route

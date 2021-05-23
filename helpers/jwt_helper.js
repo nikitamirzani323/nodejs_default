@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
+const client = require('./init_redis')
 
 module.exports = {
     signAccessToken: (userId) => {
@@ -41,7 +42,7 @@ module.exports = {
             const payload = {}
             const secret = process.env.REFRESH_TOKEN_SECRET
             const option = {
-                expiresIn: '1y',
+                expiresIn: '1d', //expire 1 hari
                 issuer: 'pickurpage.com',
                 audience: userId
             }
@@ -50,7 +51,16 @@ module.exports = {
                     console.log(err.message)
                     reject(createError.InternalServerError())
                 }
-                resolve(token)
+                //set expire 1 tahun : 365 * 24 * 60 * 60
+                //set expire 1 hari : 1 * 24 * 60 * 60
+                client.SET(userId, token, 'EX', 1 * 24 * 60 * 60, (err, reply) => {
+                    if (err) {
+                        console.log(err.message)
+                        reject(createError.InternalServerError())
+                        return
+                    }
+                    resolve(token)
+                })
             })
         })
     },
@@ -59,6 +69,15 @@ module.exports = {
             JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
                 if (err) return reject(createError.Unauthorized())
                 const userId = payload.aud
+                client.GET(userId, (err, result) => {
+                    if (err) {
+                        console.log(err.message)
+                        reject(createError.InternalServerError())
+                        return
+                    }
+                    if (refreshToken === result) return resolve(userId)
+                    reject(createError.Unauthorized())
+                })
                 resolve(userId)
             })
         })
