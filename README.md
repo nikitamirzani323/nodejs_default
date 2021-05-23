@@ -10,8 +10,12 @@ Default Node JS
 -JWT TOKEN
 -redis
 -security express rate limit access
+-response time
+-axios
 
 Link Referensi :
+https://www.npmjs.com/package/axios
+https://www.npmjs.com/package/response-time
 https://www.npmjs.com/package/express-rate-limit
 https://www.npmjs.com/package/redis
 https://www.npmjs.com/package/jsonwebtoken

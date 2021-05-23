@@ -4,6 +4,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE3OTg5M
 ###ABOUT
 GET http://localhost:9999/about
 
+###ROCKET
+GET http://localhost:9999/rockets
+
+###ROCKET ID
+GET http://localhost:9999/rockets/falcon1
+
 ###
 GET http://localhost:9999/abc_asd
 

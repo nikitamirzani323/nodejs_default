@@ -2,6 +2,13 @@ const express = require('express')
 const morgan = require('morgan')
 const limitter = require('express-rate-limit')
 const createError = require('http-errors')
+const responseTime = require('response-time')
+const axios = require('axios')
+const client = require('./helpers/init_redis')
+const {
+    promisify
+} = require('util')
+
 require('dotenv').config()
 require('./helpers/init_mongodb')
 require('./helpers/init_redis')
@@ -13,19 +20,8 @@ const {
 const AuthRoute = require('./Routes/Auth.route')
 const app = express()
 
-app.use(limitter({
-    //DEMO
-    windowMs: 5000,
-    max: 5,
-    message: {
-        code: 429,
-        message: 'Too many request'
-    }
-    //LIVE
-    // windowMs: 15 * 60 * 1000, // 15 minutes
-    // max: 100 // limit each IP to 100 requests per windowMs
-}))
 app.use(morgan('dev'))
+app.use(responseTime())
 app.use(express.json())
 app.use(express.urlencoded({
     extended: true
@@ -34,9 +30,79 @@ app.use(express.urlencoded({
 app.get('/', verifyAccessToken, async (req, res, next) => {
     res.send("hello from express");
 });
-app.use('/auth', AuthRoute)
-app.use('/about', async (req, res, next) => {
+const authLimiter = limitter({
+    windowMs: 1 * 60 * 1000,
+    max: 5,
+    message: {
+        code: 429,
+        message: 'Too many request, Please try again'
+    }
+})
+app.use('/auth', authLimiter, AuthRoute)
+
+const aboutLimiter = limitter({
+    windowMs: 5 * 60 * 1000,
+    max: 2,
+    message: {
+        code: 429,
+        message: 'Too many request, Please try again'
+    }
+})
+app.use('/about', aboutLimiter, async (req, res, next) => {
     res.send("about");
+})
+const rocketLimiter = limitter({
+    windowMs: 5 * 60 * 1000,
+    max: 10,
+    message: {
+        code: 429,
+        message: 'Too many request, Please try again'
+    }
+})
+
+const GET_ASYNC = promisify(client.GET).bind(client)
+const SET_ASYNC = promisify(client.SET).bind(client)
+
+app.use('/rockets', async (req, res, next) => {
+    try {
+        const reply = await GET_ASYNC('rockets')
+        if (reply) {
+            console.log('using cached data')
+            res.send(JSON.parse(reply))
+            return
+        }
+
+        const response = await axios.get('https://api.spacexdata.com/v3/rockets')
+        const saveResult = await SET_ASYNC('rockets', JSON.stringify(response.data), 'EX', 5)
+        console.log('new data cached', saveResult)
+
+
+        res.send(response.data)
+    } catch (error) {
+        next(error)
+    }
+})
+app.use('/rockets/:rocket_id', async (req, res, next) => {
+    try {
+        const {
+            rocket_id
+        } = req.params
+        const reply = await GET_ASYNC(rocket_id)
+        if (reply) {
+            console.log('using cached data')
+            res.send(JSON.parse(reply))
+            return
+        }
+
+        const response = await axios.get(`https://api.spacexdata.com/v3/rockets/${rocket_id}`)
+        const saveResult = await SET_ASYNC(rocket_id, JSON.stringify(response.data), 'EX', 5)
+        console.log('new data cached', saveResult)
+
+
+        res.send(response.data)
+    } catch (error) {
+        next(error)
+    }
 })
 
 //CAPTURE ERROR NOT FOUND / router tidak terdaftar
